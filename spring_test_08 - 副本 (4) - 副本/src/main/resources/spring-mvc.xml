@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       https://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/mvc
+       https://www.springframework.org/schema/mvc/spring-mvc.xsd
+       http://www.springframework.org/schema/aop
+       https://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!--注解扫描：只扫描控制器所在的包，该扫描范围不能大-->
+    <context:component-scan base-package="com.aaa.controller"/>
+    <!--识别mvc中的注解-->
+    <mvc:annotation-driven conversion-service="conversionService2">
+    </mvc:annotation-driven>
+    <bean id="conversionService2" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+        <property name="converters">
+            <set>
+                <bean class="com.aaa.controller.GlobalConverter"></bean>
+            </set>
+        </property>
+    </bean>
+    <!--视图解析器 17 将来在控制其中会返回一个字符串形式的视图的名字 18 视图解析器会对改名字进行解析 19 前缀（目录）+视图名称+（后缀）.jsp 20 -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <!--前缀-->
+        <property name="prefix" value="/"/>
+        <!--后缀-->
+        <property name="suffix" value=".jsp"/>
+    </bean>
+<!--使用tomacat中默认的servlet处理器，处理css，js-->
+    <mvc:default-servlet-handler/>
+    <!--配置静态资源-->
+    <!--<mvc:resources mapping="/js/**" location="/js/"/>-->
+
+
+    <!--文件上传的解析器-->
+    <!--id="multipartResolver"：必须指定该ID，ID的名字不能 改-->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!--默认的编码方式-->
+        <property name="defaultEncoding" value="utf- 8"/>
+        <!--总的文件上传的大小，默认是字节为单位--> <!--<property name="maxUploadSize" value="1024"/>-->
+    </bean>
+
+    <!--开启类代理-->
+    <aop:config proxy-target-class="true"/>
+
+</beans>
